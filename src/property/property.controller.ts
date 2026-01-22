@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Head,
+  Header,
+  Headers,
   Param,
   Patch,
   Post,
@@ -31,15 +34,23 @@ export class PropertyController {
     return { id, sort };
   }
   @Post()
-  create(@Body(new ZodValidationPipe(PropertySchema)) data: propertyzodDto) {
-    return data;
+  create(
+    @Body(new ZodValidationPipe(PropertySchema)) data: propertyzodDto,
+    @Headers() head,
+  ) {
+    return { head };
   }
+
   @Patch(':id')
   update(
-    @Param(new ZodValidationPipe(IdParamSchema)) Param: { id: number },
-    @Body(new ZodValidationPipe(PropertySchema)) data: propertyzodDto,
+    // @Param(new ZodValidationPipe(IdParamSchema)) Param: { id: number },
+    // @Body(new ZodValidationPipe(PropertySchema)) data: propertyzodDto,
+    @Headers() head: { host; accept; connection },
   ) {
-    const { id } = Param;
-    return `${JSON.stringify(data)} and ${id}`;
+    // const { id } = Param;
+    const { host } = head;
+    const { accept } = head;
+    const { connection } = head;
+    return { host, accept, connection };
   }
 }
